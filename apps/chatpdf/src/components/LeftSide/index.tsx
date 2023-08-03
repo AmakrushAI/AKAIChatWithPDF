@@ -1,24 +1,21 @@
-import React, { useContext, useEffect } from 'react';
-// import Dropzone from 'react-dropzone';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './index.module.css';
 import messageIcon from '../../assets/icons/message.svg';
 import BurgerIcon from '../../assets/icons/burger-menu';
 import Image from 'next/image';
 import { AppContext } from '../../context';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { getInitialMsgs } from '../../utils/textUtility';
+import { Spinner } from '@chakra-ui/react';
 
 const LeftSide = () => {
   const context = useContext(AppContext);
+  const [spinner, setSpinner] = useState(true);
   const {
     pdfList,
     setPdfList,
     selectedPdf,
     setSelectedPdf,
-    setUploadingPdf,
-    setUploadProgress,
-    setProcessingPdf,
     setMessages,
     collapsed,
     setCollapsed,
@@ -32,19 +29,34 @@ const LeftSide = () => {
     let pdfListTemp: any[] = [];
 
     const fetchPdf = async (path: string, name: string, id: number) => {
-      const response = await fetch(path);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      pdfListTemp.push({
-        file: new File([blob], name),
-        preview: blobUrl,
-        id: id,
-      });
+      try {
+        const response = await fetch(path);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        pdfListTemp.push({
+          file: new File([blob], name),
+          preview: blobUrl,
+          id: id,
+        });
+      } catch (error) {
+        console.error('Error fetching PDF:', error);
+      }
     };
 
-    fetchPdf('/pdfs/farmerbook.pdf', 'farmerbook', 1)
-      .then(() => fetchPdf('/pdfs/schemes.pdf', 'schemes', 2))
-      .then(() => setPdfList(pdfListTemp));
+    Promise.all([
+      fetchPdf('/pdfs/farmerbook.pdf', 'farmerbook', 1),
+      fetchPdf('/pdfs/schemes.pdf', 'schemes', 2),
+    ])
+      .then(() => {
+        setPdfList(pdfListTemp);
+        setSpinner(false);
+      })
+      .catch((error) => {
+        toast.error("Error fetching PDFs")
+        console.error('Error fetching PDFs:', error);
+        setSpinner(false);
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Method to select a PDF
@@ -81,28 +93,35 @@ const LeftSide = () => {
 
   return (
     <div className={styles.main}>
-      <div>
+      <div style={{height: '90%'}}>
         <div
           className={styles.pdflist}
           style={{ margin: collapsed ? '20% 0' : '' }}>
-            <p className={styles.mobileView} style={{textAlign: 'center'}}>PDF List</p>
-            <p style={{textAlign: 'center'}}>{collapsed ? '':'PDF List'}</p>
-          {pdfList.map((pdf: any, i: number) => (
-            <div
-              className={styles.pdfElement}
-              key={i}
-              onClick={() => selectPdf(pdf)}>
+          <p className={styles.mobileView} style={{ textAlign: 'center' }}>
+            PDF List
+          </p>
+          <p style={{ textAlign: 'center' }}>{collapsed ? '' : 'PDF List'}</p>
+          {spinner ? (
+            // @ts-ignore
+            <div style={{textAlign: 'center'}}><Spinner /></div>
+          ) : (
+            pdfList.map((pdf: any, i: number) => (
               <div
-                className={styles.imageContainer}
-                style={{ width: collapsed ? '100%' : '20%' }}>
-                <Image src={messageIcon} alt="" width={25} height={25} />
+                className={styles.pdfElement}
+                key={i}
+                onClick={() => selectPdf(pdf)}>
+                <div
+                  className={styles.imageContainer}
+                  style={{ width: collapsed ? '100%' : '20%' }}>
+                  <Image src={messageIcon} alt="" width={25} height={25} />
+                </div>
+                <div className={styles.mobileView}>{pdf.file.name}</div>
+                {!collapsed && (
+                  <div className={styles.pdfName}>{pdf.file.name}</div>
+                )}
               </div>
-              <div className={styles.mobileView}>{pdf.file.name}</div>
-              {!collapsed && (
-                <div className={styles.pdfName}>{pdf.file.name}</div>
-              )}
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
       <div className={styles.burgerIcon} onClick={handleToggleCollapse}>

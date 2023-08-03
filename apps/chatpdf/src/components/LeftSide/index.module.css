@@ -77,14 +77,6 @@
     flex-direction: column;
     justify-content: flex-start;
   }
-  .dropzone{
-    width: 50%;
-    margin: auto;
-    margin-top: 10%;
-  }
-  .dropzone p{
-    font-size: 3rem;
-  }
   .burgerIcon{
     display: none;
   }
