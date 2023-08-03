@@ -133,11 +133,11 @@ const ChatMessageItem: FC<ChatMessageItemPropType> = ({
                     console.log('clearing chat');
                     context?.setMessages([]);
                   }
-                  // context?.sendMessage(choice.text);
+                  context?.sendMessage(choice.text);
                 }
               }}>
               <div className="onHover" style={{ display: 'flex' }}>
-                <div>{choice.text}</div>
+                <div style={{display: 'flex', alignItems: 'center'}}>{choice.text}</div>
                 <div style={{ marginLeft: 'auto' }}>
                   <RightIcon width="5.5vh" color="var(--secondary)" />
                 </div>

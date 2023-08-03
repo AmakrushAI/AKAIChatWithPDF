@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { AppContext } from '../../context';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { getInitialMsgs } from '../../utils/textUtility';
 
 const LeftSide = () => {
   const context = useContext(AppContext);
@@ -30,18 +31,19 @@ const LeftSide = () => {
   useEffect(() => {
     let pdfListTemp: any[] = [];
 
-    const fetchPdf = async (path: string, name: string) => {
+    const fetchPdf = async (path: string, name: string, id: number) => {
       const response = await fetch(path);
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
       pdfListTemp.push({
         file: new File([blob], name),
         preview: blobUrl,
+        id: id,
       });
     };
 
-    fetchPdf('/pdfs/farmerbook.pdf', 'farmerbook')
-      .then(() => fetchPdf('/pdfs/schemes.pdf', 'schemes'))
+    fetchPdf('/pdfs/farmerbook.pdf', 'farmerbook', 1)
+      .then(() => fetchPdf('/pdfs/schemes.pdf', 'schemes', 2))
       .then(() => setPdfList(pdfListTemp));
   }, []);
 
@@ -65,6 +67,7 @@ const LeftSide = () => {
     // Update the preview for the selected PDF and set it as selected
     const newPdf = { ...pdf, preview: newPreview };
     setSelectedPdf(newPdf);
+    setMessages([getInitialMsgs(pdf.id)]);
 
     // Update the preview in the pdfList
     const newPdfList = pdfList.map((p: any) =>
