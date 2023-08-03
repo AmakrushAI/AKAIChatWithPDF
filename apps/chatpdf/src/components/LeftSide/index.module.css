@@ -22,25 +22,6 @@
   width: 100%;
 }
 
-.dropzone {
-  background-color: #324352;
-  border: 1px solid white;
-  border-style: dashed;
-  padding: 1vh;
-  text-align: center;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.dropzone:hover {
-  cursor: pointer;
-}
-
-.dropzone span {
-  color: #cccccc;
-}
-
 .pdfElement {
   display: flex;
   align-items: center;
