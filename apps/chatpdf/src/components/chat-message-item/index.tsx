@@ -137,7 +137,9 @@ const ChatMessageItem: FC<ChatMessageItemPropType> = ({
                 }
               }}>
               <div className="onHover" style={{ display: 'flex' }}>
-                <div style={{display: 'flex', alignItems: 'center'}}>{choice.text}</div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {choice.text}
+                </div>
                 <div style={{ marginLeft: 'auto' }}>
                   <RightIcon width="5.5vh" color="var(--secondary)" />
                 </div>
@@ -214,6 +216,9 @@ const ChatMessageItem: FC<ChatMessageItemPropType> = ({
     content?.data?.position === 'left' &&
       content?.data?.highlightText &&
       context?.setKeyword(content.data.highlightText || '');
+    content?.data?.position === 'left' &&
+      content?.data?.highlightPages &&
+      context?.setPdfPages(content.data.highlightPages || '');
   };
 
   const { content, type } = message;

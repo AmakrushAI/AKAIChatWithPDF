@@ -1,19 +1,19 @@
-export const getInitialMsgs = (pdfID: number): any => {
+export const getInitialMsgs = (pdfID: any): any => {
   switch (pdfID) {
-    case 1:
+    case "207e343b-4d94-4d03-af6b-d276e79c5b72":
       return {
         choices: [
-          { text: 'What are the factors influencing decision of crops?', key: "1" },
+          { text: 'When was Taj Mahal built?', key: "1" },
           { text: 'What is this file about?', key: "2" },
-          { text: 'What are the methods to supply irrigation water to plants?', key: "3" },
+          { text: 'When was Great wall of China built?', key: "3" },
         ],
       };
-    case 2:
+    case "b75cdad8-ddd0-48f1-956a-777b507d38f1":
       return {
         choices: [
-          { text: 'What is the objective of National Food Security Mission?', key: "1" },
+          { text: 'What is the objective of NEP?', key: "1" },
           { text: 'What is this file about?', key: "2" },
-          { text: 'Can you explain about KALIA?', key: "3" },
+          { text: 'Can you explain about NEP?', key: "3" },
         ],
       };
   }

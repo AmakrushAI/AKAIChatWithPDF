@@ -64,6 +64,7 @@ const ContextProvider: FC<{
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const audioRef = useRef(null);
   const [keyword, setKeyword] = useState([]);
+  const [pdfPages, setPdfPages] = useState([]);
 
   console.log(messages);
 
@@ -75,7 +76,8 @@ const ContextProvider: FC<{
     }: {
       user: { name: string; id: string };
       msg: {
-        content: { title: string; choices: any; highlightText: string[] };
+        content: { title: string; choices: any; highlightText: string[];
+        highlightPages: any[] };
         messageId: string;
       };
       media: any;
@@ -94,6 +96,7 @@ const ContextProvider: FC<{
           //@ts-ignore
           conversationId: msg?.content?.conversationId,
           highlightText: msg?.content?.highlightText,
+          highlightPages: msg?.content?.highlightPages,
           sentTimestamp: Date.now(),
           ...media,
         };
@@ -290,6 +293,10 @@ const ContextProvider: FC<{
           const highlightText = response.data.context ? response.data.context.map(
             (obj: any) => obj.content
           ) : [''];
+          const highlightPages = response.data.context ? response.data.context.map(
+            (obj: any) => obj.metaData
+          ) : [''];
+
           console.log('hie', highlightText);
           onMessageReceived({
             content: {
@@ -298,6 +305,7 @@ const ContextProvider: FC<{
               choices: null,
               conversationId: sessionStorage.getItem('conversationId'),
               highlightText,
+              highlightPages,
             },
             messageId: uuidv4(),
           });
@@ -310,6 +318,7 @@ const ContextProvider: FC<{
               choices: null,
               conversationId: sessionStorage.getItem('conversationId'),
               highlightText: [''],
+              highlightPages: ['']
             },
             messageId: uuidv4(),
           });
@@ -401,7 +410,9 @@ const ContextProvider: FC<{
       collapsed,
       setCollapsed,
       keyword,
-      setKeyword
+      setKeyword,
+      pdfPages,
+      setPdfPages
     }),
     [
       locale,
@@ -439,7 +450,9 @@ const ContextProvider: FC<{
       collapsed,
       setCollapsed,
       keyword,
-      setKeyword
+      setKeyword,
+      pdfPages,
+      setPdfPages
     ]
   );
 

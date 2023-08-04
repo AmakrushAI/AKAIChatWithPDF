@@ -28,7 +28,7 @@ const LeftSide = () => {
   useEffect(() => {
     let pdfListTemp: any[] = [];
 
-    const fetchPdf = async (path: string, name: string, id: number) => {
+    const fetchPdf = async (path: string, name: string, id: any) => {
       try {
         const response = await fetch(path);
         const blob = await response.blob();
@@ -44,19 +44,19 @@ const LeftSide = () => {
     };
 
     Promise.all([
-      fetchPdf('/pdfs/farmerbook.pdf', 'farmerbook', 1),
-      fetchPdf('/pdfs/schemes.pdf', 'schemes', 2),
+      fetchPdf('/pdfs/seven-wonders.pdf', 'seven wonders', "207e343b-4d94-4d03-af6b-d276e79c5b72"),
+      fetchPdf('/pdfs/NEP-small.pdf', 'NEP-small', "b75cdad8-ddd0-48f1-956a-777b507d38f1"),
     ])
       .then(() => {
         setPdfList(pdfListTemp);
         setSpinner(false);
       })
       .catch((error) => {
-        toast.error("Error fetching PDFs")
+        toast.error('Error fetching PDFs');
         console.error('Error fetching PDFs:', error);
         setSpinner(false);
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Method to select a PDF
@@ -93,7 +93,7 @@ const LeftSide = () => {
 
   return (
     <div className={styles.main}>
-      <div style={{height: '90%'}}>
+      <div style={{ height: '90%' }}>
         <div
           className={styles.pdflist}
           style={{ margin: collapsed ? '20% 0' : '' }}>
@@ -103,7 +103,9 @@ const LeftSide = () => {
           <p style={{ textAlign: 'center' }}>{collapsed ? '' : 'PDF List'}</p>
           {spinner ? (
             // @ts-ignore
-            <div style={{textAlign: 'center'}}><Spinner /></div>
+            <div style={{ textAlign: 'center' }}>
+              <Spinner />
+            </div>
           ) : (
             pdfList.map((pdf: any, i: number) => (
               <div

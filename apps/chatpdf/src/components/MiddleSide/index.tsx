@@ -16,22 +16,28 @@ import { Spinner } from '@chakra-ui/react';
 
 const MiddleSide = () => {
   const context = useContext(AppContext);
-  const { selectedPdf, uploadingPdf, uploadProgress, processingPdf, keyword } =
-    context;
+  const {
+    selectedPdf,
+    uploadingPdf,
+    uploadProgress,
+    processingPdf,
+    keyword,
+    pdfPages,
+  } = context;
   const newPlugin = defaultLayoutPlugin();
   console.log('hie', selectedPdf);
 
   const searchPluginInstance = searchPlugin();
-  const { highlight } = searchPluginInstance;
+  const { highlight, setTargetPages } = searchPluginInstance;
 
   useEffect(() => {
     function splitStringsIntoChunks(stringsArray: string[]) {
       const result = [];
-    
+
       for (let i = 0; i < stringsArray.length; i++) {
         const words = stringsArray[i].split(' ');
         let currentChunk: string[] = [];
-    
+
         for (let j = 0; j < words.length; j++) {
           if (currentChunk.length < 4) {
             currentChunk.push(words[j].trim());
@@ -40,14 +46,21 @@ const MiddleSide = () => {
             currentChunk = [words[j].trim()];
           }
         }
-    
+
         if (currentChunk.length > 0) {
           result.push(currentChunk.join(' '));
         }
       }
-    
+
       return result;
     }
+    console.log('hie ', pdfPages);
+    keyword &&
+      setTargetPages(
+        (targetPage) =>
+          targetPage.pageIndex >= pdfPages?.[0]?.startPage &&
+          targetPage.pageIndex <= pdfPages?.[0]?.endPage
+      );
     keyword && highlight(splitStringsIntoChunks(keyword));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [keyword]);
@@ -59,7 +72,7 @@ const MiddleSide = () => {
           processingPdf ? (
             <div className={styles.noPdf}>
               {/* @ts-ignore */}
-              <Spinner/>
+              <Spinner />
             </div>
           ) : (
             <div
