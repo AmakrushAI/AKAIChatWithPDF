@@ -19,6 +19,8 @@ const LeftSide = () => {
     setMessages,
     collapsed,
     setCollapsed,
+    currentPdfId,
+    setCurrentPdfId,
   } = context;
 
   const handleToggleCollapse = () => {
@@ -44,8 +46,11 @@ const LeftSide = () => {
     };
 
     Promise.all([
-      fetchPdf('/pdfs/seven-wonders.pdf', 'seven wonders', "207e343b-4d94-4d03-af6b-d276e79c5b72"),
-      fetchPdf('/pdfs/NEP-small.pdf', 'NEP-small', "b75cdad8-ddd0-48f1-956a-777b507d38f1"),
+      fetchPdf(
+        '/pdfs/farmerbook.pdf',
+        'farmerbook',
+        '54f1a626-1150-4070-b7f5-7f478e60285c'
+      ),
     ])
       .then(() => {
         setPdfList(pdfListTemp);
@@ -60,7 +65,8 @@ const LeftSide = () => {
   }, []);
 
   // Method to select a PDF
-  const selectPdf = (pdf: any) => {
+  const selectPdf = (pdf: any, clearMsg?: boolean) => {
+    if (clearMsg === undefined) clearMsg = true; // Don't clear messages only if explicitly false passed
     //Dont let select pdf unless response came
     if (context?.loading) {
       toast.error('Please wait for response');
@@ -69,8 +75,9 @@ const LeftSide = () => {
 
     // Revoke the URL of the currently-selected PDF, if there is one and clear the messages
     if (selectedPdf) {
+      if (pdf.id === currentPdfId) return; // If current selected pdf is selected again, return
       URL.revokeObjectURL(selectedPdf.preview);
-      setMessages([]);
+      clearMsg && setMessages([]);
     }
 
     // Create a new object URL for the selected PDF
@@ -79,7 +86,13 @@ const LeftSide = () => {
     // Update the preview for the selected PDF and set it as selected
     const newPdf = { ...pdf, preview: newPreview };
     setSelectedPdf(newPdf);
-    setMessages([getInitialMsgs(pdf.id)]);
+    setCurrentPdfId(pdf.id);
+    // Just change the options for new pdf rest keep the history
+    // prevMessages would be empty if clearMsgs is not passed false
+    setMessages((prevMessages: any) => [
+      getInitialMsgs(pdf.id),
+      ...prevMessages.slice(1),
+    ]);
 
     // Update the preview in the pdfList
     const newPdfList = pdfList.map((p: any) =>
@@ -90,6 +103,14 @@ const LeftSide = () => {
     // Run only for mobile view
     window.innerWidth < 768 && setCollapsed((prev: any) => !prev);
   };
+
+  useEffect(() => {
+    if (selectedPdf && selectedPdf.id !== currentPdfId) {
+      const pdf = pdfList.filter((p: any) => p.id === currentPdfId); // Select pdf whose context is latest
+      selectPdf(pdf[0], false); // Pass false so that even if pdf changes, history remains
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPdfId]);
 
   return (
     <div className={styles.main}>
@@ -102,8 +123,8 @@ const LeftSide = () => {
           </p>
           <p style={{ textAlign: 'center' }}>{collapsed ? '' : 'PDF List'}</p>
           {spinner ? (
-            // @ts-ignore
             <div style={{ textAlign: 'center' }}>
+              {/*  @ts-ignore */}
               <Spinner />
             </div>
           ) : (

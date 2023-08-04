@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import ComputeAPI from '../components/recorder/Model/ModelSearch/HostedInference';
+import { searchPlugin } from '@react-pdf-viewer/search';
 
 function loadMessages(locale: string) {
   switch (locale) {
@@ -48,7 +49,7 @@ const ContextProvider: FC<{
   const [selectedPdf, setSelectedPdf] = useState<any>(null);
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [processingPdf, setProcessingPdf] = useState(false);
+  const [processingPdf, setProcessingPdf] = useState(false); // Used to show spinner while API req is on pending
   const [users, setUsers] = useState<UserType[]>([]);
   const [currentUser, setCurrentUser] = useState<UserType>();
   const [loading, setLoading] = useState(false);
@@ -63,8 +64,10 @@ const ContextProvider: FC<{
   const [cookie, setCookie, removeCookie] = useCookies();
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const audioRef = useRef(null);
-  const [keyword, setKeyword] = useState([]);
-  const [pdfPages, setPdfPages] = useState([]);
+  const [keyword, setKeyword] = useState([]); // Array of context to highlight
+  const [pdfPages, setPdfPages] = useState([]); // Target pages to highlight
+  const [currentPdfId, setCurrentPdfId] = useState(''); // PDF ID of response context
+  const searchPluginInstance = searchPlugin();
 
   console.log(messages);
 
@@ -76,8 +79,12 @@ const ContextProvider: FC<{
     }: {
       user: { name: string; id: string };
       msg: {
-        content: { title: string; choices: any; highlightText: string[];
-        highlightPages: any[] };
+        content: {
+          title: string;
+          choices: any;
+          highlightText: string[];
+          highlightPages: any[];
+        };
         messageId: string;
       };
       media: any;
@@ -253,6 +260,8 @@ const ContextProvider: FC<{
         }
       } else {
         //console.log('mssgs:',messages)
+        searchPluginInstance.clearHighlights();
+
         //@ts-ignore
         setMessages((prev: any) => [
           ...prev.map((prevMsg: any) => ({ ...prevMsg })),
@@ -290,12 +299,15 @@ const ContextProvider: FC<{
 
           // Handle response here
           console.log('hie', response.data);
-          const highlightText = response.data.context ? response.data.context.map(
-            (obj: any) => obj.content
-          ) : [''];
-          const highlightPages = response.data.context ? response.data.context.map(
-            (obj: any) => obj.metaData
-          ) : [''];
+          const highlightText = response.data.context
+            ? response.data.context.map((obj: any) => obj.content)
+            : [''];
+          const highlightPages = response.data.context
+            ? response.data.context.map((obj: any) => obj.metaData)
+            : [''];
+          const pdfIds = response.data.context
+            ? response.data.context.map((obj: any) => obj.pdfId)
+            : [''];
 
           console.log('hie', highlightText);
           onMessageReceived({
@@ -309,16 +321,17 @@ const ContextProvider: FC<{
             },
             messageId: uuidv4(),
           });
+          setCurrentPdfId(pdfIds[0]);
         } catch (error) {
           // Handle error here
           onMessageReceived({
             content: {
-              title: "Something went wrong. Please try again later.",
+              title: 'Something went wrong. Please try again later.',
               msg_type: 'TEXT',
               choices: null,
               conversationId: sessionStorage.getItem('conversationId'),
               highlightText: [''],
-              highlightPages: ['']
+              highlightPages: [''],
             },
             messageId: uuidv4(),
           });
@@ -328,7 +341,7 @@ const ContextProvider: FC<{
         }
       }
     },
-    [removeCookie, selectedPdf?.uuid, currentUser?.id, onMessageReceived]
+    [removeCookie, searchPluginInstance, currentUser?.id, onMessageReceived]
   );
 
   const fetchIsDown = useCallback(async () => {
@@ -412,7 +425,10 @@ const ContextProvider: FC<{
       keyword,
       setKeyword,
       pdfPages,
-      setPdfPages
+      setPdfPages,
+      searchPluginInstance,
+      currentPdfId,
+      setCurrentPdfId,
     }),
     [
       locale,
@@ -452,7 +468,10 @@ const ContextProvider: FC<{
       keyword,
       setKeyword,
       pdfPages,
-      setPdfPages
+      setPdfPages,
+      searchPluginInstance,
+      currentPdfId,
+      setCurrentPdfId,
     ]
   );
 

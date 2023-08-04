@@ -10,7 +10,6 @@ import {
   RichText,
   //@ts-ignore
 } from 'chatui';
-import axios from 'axios';
 import React, {
   FC,
   ReactElement,

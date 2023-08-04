@@ -10,7 +10,6 @@ import {
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import { searchPlugin } from '@react-pdf-viewer/search';
 import '@react-pdf-viewer/search/lib/styles/index.css';
 import { Spinner } from '@chakra-ui/react';
 
@@ -23,11 +22,11 @@ const MiddleSide = () => {
     processingPdf,
     keyword,
     pdfPages,
+    searchPluginInstance,
   } = context;
   const newPlugin = defaultLayoutPlugin();
   console.log('hie', selectedPdf);
 
-  const searchPluginInstance = searchPlugin();
   const { highlight, setTargetPages } = searchPluginInstance;
 
   useEffect(() => {
@@ -57,7 +56,7 @@ const MiddleSide = () => {
     console.log('hie ', pdfPages);
     keyword &&
       setTargetPages(
-        (targetPage) =>
+        (targetPage: any) =>
           targetPage.pageIndex >= pdfPages?.[0]?.startPage &&
           targetPage.pageIndex <= pdfPages?.[0]?.endPage
       );
