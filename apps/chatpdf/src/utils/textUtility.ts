@@ -8,5 +8,13 @@ export const getInitialMsgs = (pdfID: any): any => {
           { text: 'What is the need for drainage?', key: '3' },
         ],
       };
+    case '8afc6b4f-6441-4714-b89d-3ca66ec20cac':
+      return {
+        choices: [
+          { text: 'What is national food security mission?', key: '1' },
+          { text: 'What is this file about?', key: '2' },
+          { text: 'Tell me about one state sector scheme?', key: '3' },
+        ],
+      };
   }
 };

@@ -51,6 +51,11 @@ const LeftSide = () => {
         'farmerbook',
         '54f1a626-1150-4070-b7f5-7f478e60285c'
       ),
+      fetchPdf(
+        '/pdfs/schemes.pdf',
+        'schemes',
+        '8afc6b4f-6441-4714-b89d-3ca66ec20cac'
+      ),
     ])
       .then(() => {
         setPdfList(pdfListTemp);
