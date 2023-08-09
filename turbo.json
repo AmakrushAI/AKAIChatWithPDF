@@ -13,7 +13,8 @@
     "NEXT_PUBLIC_FUS_URL",
     "NEXT_PUBLIC_FUS_AUTH",
     "NEXT_PUBLIC_DHRUVA_AUTH",
-    "NEXT_PUBLIC_TTS_MODEL_ID"
+    "NEXT_PUBLIC_TTS_MODEL_ID",
+    "NEXT_PUBLIC_ASR_API"
   ],
 
   "globalDependencies": ["**/.env.*local"],

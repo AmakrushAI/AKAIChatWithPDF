@@ -45,7 +45,7 @@ function NavBar() {
       </div>
       <div className={styles.navbarHeading}>{t('label.title')}</div>
 
-      <div className={styles.newChatContainer}>
+      {/* <div className={styles.newChatContainer}>
         <Select value={selectedLanguage} onChange={toggleLanguage}>
           <MenuItem value="en">English</MenuItem>
           <MenuItem value="hi">Hindi</MenuItem>
@@ -53,7 +53,7 @@ function NavBar() {
           <MenuItem value="ta">Tamil</MenuItem>
           <MenuItem value="te">Telugu</MenuItem>
         </Select>
-      </div>
+      </div> */}
     </div>
   );
 }

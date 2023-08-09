@@ -17,7 +17,6 @@ import { useLocalization } from '../hooks';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import ComputeAPI from '../components/recorder/Model/ModelSearch/HostedInference';
 import { searchPlugin } from '@react-pdf-viewer/search';
 
 function loadMessages(locale: string) {
@@ -154,76 +153,8 @@ const ContextProvider: FC<{
           media: { fileUrl: msg?.content?.media_url },
         });
       } else if (msg.content.msg_type.toUpperCase() === 'TEXT') {
-        try {
-          if (localStorage.getItem('locale') === 'en') {
-            setLoading(false);
-            updateMsgState({ user, msg, media: {} });
-            return;
-          }
-          const modelId_TRANSLATION = () => {
-            const lang = localStorage.getItem('locale') || 'en';
-            switch (lang) {
-              case 'hi':
-                return '6110f7f7014fa35d5e767c3f';
-              case 'bn':
-                return '6110f7da014fa35d5e767c3d';
-              case 'ta':
-                return '610cfe8b014fa35d5e767c35';
-              case 'te':
-                return '6110f89b014fa35d5e767c46';
-              default:
-                return '63ee09c3b95268521c70cd7c';
-            }
-          };
-
-          if (msg.content.split) {
-            let titles = msg.content.title.split(`\n`);
-            for (let i = 0; i < titles.length; i++) {
-              const obj = new ComputeAPI(
-                modelId_TRANSLATION(),
-                titles[i],
-                'translation',
-                '',
-                '',
-                '',
-                ''
-              );
-              const res = await fetch(obj.apiEndPoint(), {
-                method: 'post',
-                body: JSON.stringify(obj.getBody()),
-                headers: obj.getHeaders().headers,
-              });
-              const rsp_data = await res.json();
-              console.log('hi', rsp_data.output[0].target);
-              titles[i] = rsp_data.output[0].target;
-            }
-            msg.content.title = titles.join(`\n`);
-            setLoading(false);
-            updateMsgState({ user, msg, media: {} });
-          } else {
-            const obj = new ComputeAPI(
-              modelId_TRANSLATION(),
-              msg.content.title,
-              'translation',
-              '',
-              '',
-              '',
-              ''
-            );
-            const res = await fetch(obj.apiEndPoint(), {
-              method: 'post',
-              body: JSON.stringify(obj.getBody()),
-              headers: obj.getHeaders().headers,
-            });
-            const rsp_data = await res.json();
-            console.log('hi', rsp_data.output[0].target);
-            msg.content.title = rsp_data.output[0].target;
-            setLoading(false);
-            updateMsgState({ user, msg, media: {} });
-          }
-        } catch (err) {
-          console.error(err);
-        }
+        setLoading(false);
+        updateMsgState({ user, msg, media: {} });
       }
     },
     [messages, updateMsgState]
