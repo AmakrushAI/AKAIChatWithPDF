@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Image from 'next/image';
 import Stop from '../../assets/icons/stop.gif';
 import Start from '../../assets/icons/startIcon.svg';
@@ -7,9 +7,11 @@ import { Grid } from '@material-ui/core';
 import styles from './styles.module.css';
 import toast from 'react-hot-toast';
 import { useLocalization } from '../../hooks';
+import { AppContext } from '../../context';
 
 const RenderVoiceRecorder = (props) => {
   const t = useLocalization();
+  const context = useContext(AppContext);
   const [gender, setGender] = useState('female');
   const [recordAudio, setRecordAudio] = useState('');
   const [base, setBase] = useState('');
@@ -114,6 +116,7 @@ const RenderVoiceRecorder = (props) => {
   const makeComputeAPICall = async (type) => {
     try {
       // console.log("base", base)
+      context?.setSttReq(true);
       const prefix = "data:audio/wav;base64,";
       const actualBase64 = base.substring(prefix.length);
       const audioData = Uint8Array.from(atob(actualBase64), c => c.charCodeAt(0));
@@ -139,6 +142,7 @@ const RenderVoiceRecorder = (props) => {
         body: formData
       });
   
+      context?.setSttReq(false);
       if (resp.ok) {
         const rsp_data = await resp.text();
         if (rsp_data !== '') {
@@ -150,6 +154,7 @@ const RenderVoiceRecorder = (props) => {
         console.log(resp);
       }
     } catch (error) {
+      context?.setSttReq(false);
       console.error(error);
       toast.error(error.message);
     }

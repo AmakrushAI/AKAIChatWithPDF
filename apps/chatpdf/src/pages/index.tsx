@@ -6,6 +6,7 @@ import LeftSide from '../components/LeftSide';
 import MiddleSide from '../components/MiddleSide';
 import { AppContext } from '../context';
 import { useContext } from 'react';
+import { Spinner } from '@chakra-ui/react';
 
 const ChatUiWindow = dynamic(
   () => import('../components/ChatWindow/ChatUiWindow'),
@@ -15,7 +16,7 @@ const ChatUiWindow = dynamic(
 const Home: NextPage = () => {
   const t = useLocalization();
   const context = useContext(AppContext);
-  const { collapsed } = context;
+  const { collapsed, sttReq } = context;
 
   return (
     <>
@@ -52,6 +53,25 @@ const Home: NextPage = () => {
           }}
         >
           <ChatUiWindow />
+          {sttReq && (
+            <div
+              style={{
+                height: '100vh',
+                width: '100vw',
+                zIndex: 1000,
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Spinner />
+            </div>
+          )}
+          
         </div>
         
       </div>

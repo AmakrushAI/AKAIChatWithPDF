@@ -66,6 +66,7 @@ const ContextProvider: FC<{
   const [keyword, setKeyword] = useState([]); // Array of context to highlight
   const [pdfPages, setPdfPages] = useState([]); // Target pages to highlight
   const [currentPdfId, setCurrentPdfId] = useState(''); // PDF ID of response context
+  const [sttReq, setSttReq] = useState(false); // To show spinner while stt request pending
   const searchPluginInstance = searchPlugin();
 
   console.log(messages);
@@ -360,6 +361,8 @@ const ContextProvider: FC<{
       searchPluginInstance,
       currentPdfId,
       setCurrentPdfId,
+      sttReq,
+      setSttReq
     }),
     [
       locale,
@@ -403,6 +406,8 @@ const ContextProvider: FC<{
       searchPluginInstance,
       currentPdfId,
       setCurrentPdfId,
+      sttReq,
+      setSttReq
     ]
   );
 
