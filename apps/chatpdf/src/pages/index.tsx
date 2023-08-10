@@ -48,7 +48,10 @@ const Home: NextPage = () => {
         <div
           style={{
             flex: 1,
-            height: '90vh',
+            position: 'relative',
+            bottom: '7vh',
+            top: '0',
+            height: '88vh',
           }}>
           <ChatUiWindow />
         </div>
