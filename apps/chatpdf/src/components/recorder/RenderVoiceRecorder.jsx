@@ -39,6 +39,10 @@ const RenderVoiceRecorder = (props) => {
   };
 
   const handleStartRecording = () => {
+    if(context?.loading){
+      toast.error("Please wait for a reply!");
+      return;
+    }
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(() => {
@@ -116,26 +120,26 @@ const RenderVoiceRecorder = (props) => {
   const makeComputeAPICall = async (type) => {
     try {
       // console.log("base", base)
-      context?.setSttReq(true);
       const prefix = "data:audio/wav;base64,";
       const actualBase64 = base.substring(prefix.length);
       const audioData = Uint8Array.from(atob(actualBase64), c => c.charCodeAt(0));
-  
+      
       toast.success(`${t('message.recorder_wait')}`);
       setAudio(null);
-  
+      
       // Define the API endpoint
       const apiEndpoint = process.env.NEXT_PUBLIC_ASR_API;
-  
+      
       // Create a FormData object
       const formData = new FormData();
-  
+      
       // Append the WAV file to the FormData object
       // Here, we're creating a Blob from the decoded data and appending it to the FormData
       const blob = new Blob([audioData], { type: 'audio/wav' });
       // console.log("This is the file", file);
       formData.append('file', blob, 'audio.wav');
-  
+      
+      context?.setSttReq(true);
       // Send the WAV data to the API
       const resp = await fetch(apiEndpoint, {
         method: 'POST',
