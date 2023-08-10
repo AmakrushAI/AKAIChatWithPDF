@@ -113,7 +113,10 @@ const RenderVoiceRecorder = (props) => {
 
   const makeComputeAPICall = async (type) => {
     try {
-      const decodedData = Buffer.from(base, 'base64');
+      // console.log("base", base)
+      const prefix = "data:audio/wav;base64,";
+      const actualBase64 = base.substring(prefix.length);
+      const audioData = Uint8Array.from(atob(actualBase64), c => c.charCodeAt(0));
   
       toast.success(`${t('message.recorder_wait')}`);
       setAudio(null);
@@ -126,16 +129,14 @@ const RenderVoiceRecorder = (props) => {
   
       // Append the WAV file to the FormData object
       // Here, we're creating a Blob from the decoded data and appending it to the FormData
-      formData.append(
-        'file',
-        new Blob([decodedData], { type: 'audio/wav' }),
-        'audio.wav'
-      );
+      const blob = new Blob([audioData], { type: 'audio/wav' });
+      // console.log("This is the file", file);
+      formData.append('file', blob, 'audio.wav');
   
       // Send the WAV data to the API
       const resp = await fetch(apiEndpoint, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
   
       if (resp.ok) {
