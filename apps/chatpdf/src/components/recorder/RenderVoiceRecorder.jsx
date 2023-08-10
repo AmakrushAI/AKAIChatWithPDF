@@ -140,10 +140,10 @@ const RenderVoiceRecorder = (props) => {
       });
   
       if (resp.ok) {
-        const rsp_data = await resp.json();
-        if (rsp_data !== null) {
-          console.log('hi', rsp_data.data.source);
-          props.setInputMsg(rsp_data.data.source);
+        const rsp_data = await resp.text();
+        if (rsp_data !== '') {
+          console.log('hi', rsp_data);
+          props.setInputMsg(rsp_data);
         }
       } else {
         toast.error("Something went wrong. Try again later.");
