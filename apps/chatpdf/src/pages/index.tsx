@@ -48,13 +48,12 @@ const Home: NextPage = () => {
         <div
           style={{
             flex: 1,
-            position: 'relative',
-            bottom: '7vh',
-            top: '0',
-            height: '88vh',
-          }}>
+            height: window.innerWidth < 768 ? '85vh' : '90vh',
+          }}
+        >
           <ChatUiWindow />
         </div>
+        
       </div>
 
       {/* Mobile View */}
