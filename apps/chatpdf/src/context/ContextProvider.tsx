@@ -231,6 +231,9 @@ const ContextProvider: FC<{
 
           // Handle response here
           console.log('hie', response.data);
+          if(!response.data.context){
+            throw new Error("No message received.")
+          }
           const highlightText = response.data.context
             ? response.data.context.map((obj: any) => obj.content)
             : [''];
