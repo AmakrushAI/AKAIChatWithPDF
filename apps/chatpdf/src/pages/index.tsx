@@ -49,9 +49,12 @@ const Home: NextPage = () => {
         <div
           style={{
             flex: 1,
-            height: window.innerWidth < 768 ? '85vh' : '90vh',
-          }}
-        >
+            height: window.innerWidth < 768 ? '90%' : '90vh',
+            position: window.innerWidth < 768 ? 'fixed' : undefined,
+            width: window.innerWidth < 768 ? '100%' : undefined,
+            bottom: window.innerWidth < 768 ? '0' : undefined,
+            top: window.innerWidth < 768 ? '0' : undefined,
+          }}>
           <ChatUiWindow />
           {sttReq && (
             <div
@@ -66,14 +69,11 @@ const Home: NextPage = () => {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <Spinner />
             </div>
           )}
-          
         </div>
-        
       </div>
 
       {/* Mobile View */}
